@@ -1,6 +1,6 @@
 ---
 - name: Perform Debian/Ubuntu dist-upgrade
-  hosts: your_debian_based_servers # Replace with your target host group
+  hosts: all # Replace with your target host group
   become: yes # Run tasks with elevated privileges
 
   tasks:

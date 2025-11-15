@@ -1,0 +1,25 @@
+---
+- name: Perform Debian/Ubuntu dist-upgrade
+  hosts: your_debian_based_servers # Replace with your target host group
+  become: yes # Run tasks with elevated privileges
+
+  tasks:
+    - name: Update package lists
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600 # Cache valid for 1 hour
+
+    - name: Upgrade all installed packages
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: yes # Remove automatically installed packages no longer needed
+      register: upgrade_result
+
+    - name: Reboot if required after upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: 600 # Wait up to 10 minutes for reboot
+      when: upgrade_result.reboot_required is defined and upgrade_result.reboot_required
+
+    - name: Clean up old packages
+      ansible.builtin.apt:
+        autoclean: yes # Clear out the local repository of retrieved package files
